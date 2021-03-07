@@ -8,10 +8,10 @@ var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
 var gameState = "onSling";
-
+var score = 0;
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    getBackgroundImage();
 }
 
 function setup(){
@@ -24,15 +24,15 @@ function setup(){
     array2.push(20);
    
     array2.push([1,2]);
-    console.log(array2);
+    //console.log(array2);
     array2.pop();
-    console.log(array2);
+   // console.log(array2);
 
     var array1 = [10,20,"Swastik"];
-    console.log(array1[array1.length-1]);
+    //console.log(array1[array1.length-1]);
 
     var array2 = [[10,20],[30,40],[50,60]];
-    console.log(array2[2][1]);
+   // console.log(array2[2][1]);
 
     ground = new Ground(600,height,1200,20);
     platform = new Ground(150, 305, 300, 170);
@@ -54,14 +54,16 @@ function setup(){
 
     bird = new Bird(200,50);
 
-    console.log(bird.body);
+   // console.log(bird.body);
 
     //log6 = new Log(230,180,80, PI/2);
     slingshot = new SlingShot(bird.body,{x:200, y:50});
 }
 
-function draw(){
+function draw(){    
+    if(backgroundImg){
     background(backgroundImg);
+    }
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
@@ -83,7 +85,13 @@ function draw(){
     bird.display();
     platform.display();
     //log6.display();
-    slingshot.display();    
+    slingshot.display();
+    
+    pig1.score();
+    pig3.score();
+    fill("white");
+    textSize(30);
+    text("score =" + score , width - 300, 50);
 }
 
 function mouseDragged(){
@@ -93,7 +101,6 @@ function mouseDragged(){
     }
 }
 
-
 function mouseReleased(){
     slingshot.fly();
     gameState = "launch";
@@ -101,8 +108,26 @@ function mouseReleased(){
 
 function keyPressed(){
     if(keyCode === 32){
-        slingshot.attach(bird.body);
-        gameState = "onSling";
+        slingshot.attach(bird.body); //0.5
+        gameState = "onSling";//0.5
 
     }
+}
+
+async function getBackgroundImage(){
+    var response = await fetch("https://worldtimeapi.org/api/timezone/Asia/Kolkata");
+    var responseJSON = await response.json();
+    var datetime = responseJSON.datetime;
+    //var date = datetime.slice(8,10);
+    var hour = datetime.slice(11,13);
+   //console.log(hour);
+    //console.log(datetime);
+    //console.log(date);
+        if(hour > 19 && hour < 6){
+        backgroundImg = loadImage("sprites/bg2.jpg");
+        }
+        else{
+        backgroundImg = loadImage("sprites/bg.png");
+        }
+    //stringname.slice(intitial number,end number)
 }
